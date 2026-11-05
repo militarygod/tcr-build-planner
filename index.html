@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TCR Build Planner</title>
+<style>
+:root{--bg:#eceff2;--card:#fff;--ink:#14202b;--mute:#5b6b79;--line:#d3dae1;--acc:#1f5f8b;--warn:#8a4b08;--warnbg:#fff3df}
+@media (prefers-color-scheme:dark){:root{--bg:#10171d;--card:#18222b;--ink:#e6edf3;--mute:#98a8b6;--line:#2c3a46;--acc:#6db3e0;--warn:#f0b25c;--warnbg:#2c2314}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Segoe UI",Roboto,system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px 14px 48px}
+h1{font-size:1.5rem;margin:6px 0 2px}
+h2{font-size:1.1rem;margin:0 0 10px}
+p.sub{margin:0 0 12px;color:var(--mute)}
+.note{background:var(--warnbg);color:var(--warn);border-radius:8px;padding:10px 12px;font-size:.9rem;margin-bottom:14px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+label{display:block;font-size:.9rem;color:var(--mute);margin:10px 0 4px}
+input,select,button{font:inherit;width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{background:var(--acc);color:#fff;border:0;font-weight:600;margin-top:12px}
+button.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+button.x{width:auto;margin:0;padding:4px 10px;background:transparent;color:var(--mute);border:1px solid var(--line)}
+.chk{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:.9rem;color:var(--mute)}
+.chk input{width:auto;margin-top:4px}
+.result{font-size:2rem;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0 2px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.95rem}
+td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:right}
+td:first-child,th:first-child{text-align:left}
+.mute{color:var(--mute);font-size:.85rem}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+<h1>TCR Build Planner</h1>
+<p class="sub">Prototype 0.1: city production and building costs</p>
+<div class="note">Numbers come from community files and are not yet checked in-game. Treat results as estimates.</div>
+
+<section>
+<h2>City production</h2>
+<div class="row">
+<div><label for="res">Resource</label><select id="res"></select></div>
+<div><label for="base">Base value per day</label><input id="base" type="number" inputmode="decimal" min="0"></div>
+</div>
+<div class="row">
+<div><label for="morale">Morale (%)</label><input id="morale" type="number" inputmode="decimal" min="0" max="100" value="100"></div>
+<div><label for="pop">Population (1 to 10)</label><input id="pop" type="number" inputmode="decimal" min="1" max="10" step="0.1" value="5"></div>
+</div>
+<div class="row">
+<div><label for="state">City state</label><select id="state"></select></div>
+<div><label for="speed">Game speed</label>
+<select id="speed"><option value="1">1x</option><option value="0.75">4x (x 3/4)</option><option value="0.5">10x (x 1/2)</option></select></div>
+</div>
+<div class="row">
+<div><label for="ai">Arms Industry level</label><select id="ai"></select></div>
+<div><label for="ab">Air Base level</label><select id="ab"></select></div>
+</div>
+<div class="row">
+<div><label for="nb">Naval Base level</label><select id="nb"></select></div>
+<div><label for="hid">Extra map multiplier</label><input id="hid" type="number" inputmode="decimal" step="any" value="1"></div>
+</div>
+<label class="chk"><input id="rnd" type="checkbox" checked><span>Round population and morale multipliers to 2 decimals, as the wiki example does. Not yet confirmed in-game.</span></label>
+<button class="ghost" id="ex" type="button">Load wiki example (expect 2,300.844)</button>
+<div class="result" id="out">-</div>
+<div class="mute">per day</div>
+<table id="steps"></table>
+</section>
+
+<section>
+<h2>Building costs</h2>
+<div class="row">
+<div><label for="bname">Building</label><select id="bname"></select></div>
+<div><label for="blvl">Level</label><select id="blvl"></select></div>
+</div>
+<label for="bqty">How many</label><input id="bqty" type="number" inputmode="numeric" min="1" value="1">
+<button id="add" type="button">Add to plan</button>
+<div id="list"></div>
+<table id="totals"></table>
+<p class="mute" id="time"></p>
+<p class="mute">Costs are per level as listed in the community sheet. Whether higher levels cost the full amount or only the upgrade step is not yet confirmed.</p>
+</section>
+</main>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
